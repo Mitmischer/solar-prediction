@@ -1,0 +1,11 @@
+openmeteo-requests
+requests-cache
+retry-requests
+numpy
+pandas
+matplotlib
+torch
+scikit-learn
+scipy
+seaborn
+statsmodels
