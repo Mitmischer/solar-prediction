@@ -1,6 +1,6 @@
 import pandas as pd
-from statsmodels.tsa.stattools import adfuller
-
+from statsmodels.tsa.stattools import adfuller, kpss
+import matplotlib.pyplot as plt
 
 # split into train val test
 def split_ts(ts: pd.Series, val_start: str, test_start: str, date_column: str) -> tuple[pd.Series, pd.Series, pd.Series]:
@@ -132,54 +132,21 @@ def normalise_ts(train_ts, val_ts, test_ts: pd.Series) -> pd.Series:
     normalised_train = (train_ts - mean) / std
     normalised_val = (val_ts - mean) / std
     normalised_test = (test_ts - mean) / std
+
     return normalised_train, normalised_val, normalised_test
 
-
-# Make stationary - Augmented Dicky Fuller Test
-def make_stationary(train_ts, val_ts, test_ts: pd.Series) -> None:
+def undo_normalise(normalised_ts, train_ts: pd.Series) -> pd.Series:
     """
-    Perform the Augmented Dickey-Fuller test on train_ts. If train_ts is not stationary,
-    difference train_ts, val_ts, and test_ts based on the train_ts result.
+    Undo the normalisation of a time series using the mean and standard deviation of the training set.
 
     Parameters:
-    train_ts (pd.DataFrame): The training time series data.
-    val_ts (pd.DataFrame): The validation time series data.
-    test_ts (pd.DataFrame): The test time series data.
-
-    Returns:
-    None
+        :param normalised_ts: Normalised time series data.
+        :param train_ts: Time series data for training.
+        :return: Time series data after undoing normalisation.
     """
 
-    def perform_adf(series, column_name):
-        result = adfuller(series, autolag='AIC')
-        print(f'ADF Statistic for {column_name}: {result[0]}')
-        print(f'p-value for {column_name}: {result[1]}')
-        for key, value in result[4].items():
-            print(f'Critical Values for {column_name} {key}: {value}')
-        return result[1] < 0.05  # Return True if the series is stationary
+    mean = train_ts.mean()
+    std = train_ts.std()
+    return (normalised_ts * std) + mean
 
-    def check_and_difference(series, column_name):
-        differenced = False
-        is_stationary = perform_adf(series, column_name)
-        iteration = 0
-        while not is_stationary:
-            print(f'The time series {column_name} is not stationary. Differencing the series and re-testing...')
-            series = series.diff().dropna()
-            is_stationary = perform_adf(series, f'{column_name} (Differenced {iteration + 1})')
-            differenced = True
-            iteration += 1
 
-        if is_stationary:
-            print(f'The time series {column_name} is stationary after differencing {iteration} time(s).')
-        else:
-            print(f'The time series {column_name} is still not stationary after differencing {iteration} time(s).')
-
-        return series, differenced
-
-    for col in train_ts.columns:
-        print(f'Checking stationarity for {col}')
-        train_ts[col], differenced = check_and_difference(train_ts[col], col)
-        if differenced:
-            val_ts[col] = val_ts[col].diff().dropna()
-            test_ts[col] = test_ts[col].diff().dropna()
-        print("\n")  # Add a space between outputs
