@@ -3,7 +3,8 @@ from typing import Any
 import numpy as np
 import torch
 from numpy import ndarray, dtype
-from sklearn.metrics import r2_score, mean_squared_error, mean_absolute_error, mean_absolute_percentage_error, mean_absolute_error
+from sklearn.metrics import r2_score, mean_squared_error, mean_absolute_error, mean_absolute_percentage_error, \
+    mean_absolute_error
 
 # Metrics
 
@@ -61,3 +62,19 @@ def lstm_evaluate(model, dataloaders, device):
 
     return metrics
 
+
+def permutation_importance(model, X, y, n_repeats=10):
+    baseline_mse = mean_squared_error(y, model.predict(X))
+    importances = []
+
+    for column in range(X.shape[2]):  # Iterate over features
+        feature_importances = []
+        for _ in range(n_repeats):
+            X_permuted = X.copy()
+            X_permuted[:, :, column] = np.random.permutation(X_permuted[:, :, column])
+            permuted_mse = mean_squared_error(y, model.predict(X_permuted))
+            importance = permuted_mse - baseline_mse
+            feature_importances.append(importance)
+        importances.append(np.mean(feature_importances))
+
+    return importances

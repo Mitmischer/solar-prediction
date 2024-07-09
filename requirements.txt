@@ -4,10 +4,13 @@ retry-requests
 numpy
 pandas
 matplotlib
-torch
+tensorflow
 scikit-learn
 scipy
 seaborn
 statsmodels
 prophet
 importlib
+tsfresh
+shap
+datasets
