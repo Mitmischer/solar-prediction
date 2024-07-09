@@ -135,17 +135,16 @@ def create_datetime_features(train_series: pd.Series | pd.DataFrame, val_series:
         # Extract the time features
         datetime_features = pd.DataFrame(index=original.index)
         datetime_features['hour'] = datetime_source.hour
-        datetime_features['dayofweek'] = datetime_source.dayofweek
         datetime_features['dayofyear'] = datetime_source.dayofyear
 
         # Encode the time features using sine and cosine transformations
-        for col in ['hour', 'dayofweek', 'dayofyear']:
-            max_val = 24 if col == 'hour' else (7 if col == 'dayofweek' else 366)
+        for col in ['hour', 'dayofyear']:
+            max_val = 24 if col == 'hour' else 366
             datetime_features[f'{col}_sin'] = np.sin(2 * np.pi * datetime_features[col] / max_val)
             datetime_features[f'{col}_cos'] = np.cos(2 * np.pi * datetime_features[col] / max_val)
 
         # Drop the original columns (keeping only sin and cos transformations)
-        datetime_features = datetime_features.drop(['hour', 'dayofweek', 'dayofyear'], axis=1)
+        datetime_features = datetime_features.drop(['hour', 'dayofyear'], axis=1)
 
         return pd.concat([original, datetime_features], axis=1)
 
@@ -158,8 +157,6 @@ def create_datetime_features(train_series: pd.Series | pd.DataFrame, val_series:
     test_datetime = full_datetime.iloc[len(train_series) + len(val_series):]
 
     return train_datetime, val_datetime, test_datetime
-
-
 
 
 
