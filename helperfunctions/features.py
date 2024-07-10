@@ -4,8 +4,8 @@ import numpy as np
 
 # multiple lagged features
 def create_lagged_features(train_series: pd.Series | pd.DataFrame, val_series: pd.Series | pd.DataFrame,
-                           test_series: pd.Series | pd.DataFrame, lags: list[int]) -> tuple[
-    pd.Series, pd.Series, pd.Series]:
+                           test_series: pd.Series | pd.DataFrame, lags: list[int],
+                           fill_method: str = 'ffill') -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """
     Join train val test and Create lagged features for a time series on all splits of the data.
     Split the data back into train, validation, and test sets.
@@ -15,12 +15,12 @@ def create_lagged_features(train_series: pd.Series | pd.DataFrame, val_series: p
     :param val_series: The validation time series data.
     :param test_series: The test time series data.
     :param lags: A list of integers representing the lags to create.
+    :param fill_method: Method to fill missing values. Options: 'ffill', 'bfill', 'zero', 'mean', 'drop'
     :return: The train, validation, and test time series data with lagged features.
     """
 
     # Join train val test
     full_series = pd.concat([train_series, val_series, test_series])
-
 
     def add_lags(series):
         if isinstance(series, pd.Series):
@@ -36,7 +36,23 @@ def create_lagged_features(train_series: pd.Series | pd.DataFrame, val_series: p
                 lagged_features.extend(
                     [series[column].shift(lag).rename(f"{column}_lag_{lag}") for column in series.columns])
 
-        return pd.concat([original] + lagged_features, axis=1)
+        result = pd.concat([original] + lagged_features, axis=1)
+
+        # Handle missing values
+        if fill_method == 'ffill':
+            result = result.ffill()
+        elif fill_method == 'bfill':
+            result = result.bfill()
+        elif fill_method == 'zero':
+            result = result.fillna(0)
+        elif fill_method == 'mean':
+            result = result.fillna(result.mean())
+        elif fill_method == 'drop':
+            result = result.dropna()
+        else:
+            raise ValueError("Invalid fill_method. Choose from 'ffill', 'bfill', 'zero', 'mean', 'drop'")
+
+        return result
 
     # Create lagged features
     full_lagged = add_lags(full_series)
@@ -50,8 +66,8 @@ def create_lagged_features(train_series: pd.Series | pd.DataFrame, val_series: p
 
 
 def create_rolling_features(train_series: pd.Series | pd.DataFrame, val_series: pd.Series | pd.DataFrame,
-                            test_series: pd.Series | pd.DataFrame, windows: list[int]) -> tuple[
-    pd.Series, pd.Series, pd.Series]:
+                            test_series: pd.Series | pd.DataFrame, windows: list[int],
+                            fill_method: str = 'ffill') -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """
     Create rolling features for a time series on all splits of the data.
     Return three pd.DataFrames with rolling features added.
@@ -60,6 +76,7 @@ def create_rolling_features(train_series: pd.Series | pd.DataFrame, val_series: 
     :param val_series: The validation time series data.
     :param test_series: The test time series data.
     :param windows: A list of integers representing the window sizes to create.
+    :param fill_method: Method to fill missing values. Options: 'ffill', 'bfill', 'zero', 'mean', 'drop'
     :return: The train, validation, and test time series data with rolling features.
     """
     # Join train val test
@@ -85,7 +102,23 @@ def create_rolling_features(train_series: pd.Series | pd.DataFrame, val_series: 
                         series[column].rolling(window=window).std().rename(f"{column}_rolling_std_{window}")
                     ])
 
-        return pd.concat([original] + rolling_features, axis=1)
+        result = pd.concat([original] + rolling_features, axis=1)
+
+        # Handle missing values
+        if fill_method == 'ffill':
+            result = result.ffill()
+        elif fill_method == 'bfill':
+            result = result.bfill()
+        elif fill_method == 'zero':
+            result = result.fillna(0)
+        elif fill_method == 'mean':
+            result = result.fillna(result.mean())
+        elif fill_method == 'drop':
+            result = result.dropna()
+        else:
+            raise ValueError("Invalid fill_method. Choose from 'ffill', 'bfill', 'zero', 'mean', 'drop'")
+
+        return result
 
     # Create rolling features
     full_rolling = add_rolling_features(full_series)
@@ -135,17 +168,16 @@ def create_datetime_features(train_series: pd.Series | pd.DataFrame, val_series:
         # Extract the time features
         datetime_features = pd.DataFrame(index=original.index)
         datetime_features['hour'] = datetime_source.hour
-        datetime_features['dayofweek'] = datetime_source.dayofweek
         datetime_features['dayofyear'] = datetime_source.dayofyear
 
         # Encode the time features using sine and cosine transformations
-        for col in ['hour', 'dayofweek', 'dayofyear']:
-            max_val = 24 if col == 'hour' else (7 if col == 'dayofweek' else 366)
+        for col in ['hour', 'dayofyear']:
+            max_val = 24 if col == 'hour' else 366
             datetime_features[f'{col}_sin'] = np.sin(2 * np.pi * datetime_features[col] / max_val)
             datetime_features[f'{col}_cos'] = np.cos(2 * np.pi * datetime_features[col] / max_val)
 
         # Drop the original columns (keeping only sin and cos transformations)
-        datetime_features = datetime_features.drop(['hour', 'dayofweek', 'dayofyear'], axis=1)
+        datetime_features = datetime_features.drop(['hour', 'dayofyear'], axis=1)
 
         return pd.concat([original, datetime_features], axis=1)
 
@@ -160,28 +192,3 @@ def create_datetime_features(train_series: pd.Series | pd.DataFrame, val_series:
     return train_datetime, val_datetime, test_datetime
 
 
-
-
-
-
-def extract_features(ts: pd.Series, column_id: str = "id") -> pd.DataFrame:
-    """
-    Extract features from a time series using the tsfresh library.
-
-    Parameters:
-    ts (pd.Series): Time series data.
-    column_id (str): The column ID for the time series data.
-
-    Returns:
-    pd.DataFrame: A DataFrame containing the extracted features.
-    """
-    # Reset the index
-    ts = ts.reset_index()
-
-    # Rename the columns
-    ts.columns = ["time", "value"]
-
-    # Extract features
-    features = tsfresh.extract_features(ts, column_id=column_id)
-
-    return features
