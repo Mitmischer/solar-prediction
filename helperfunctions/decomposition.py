@@ -123,7 +123,7 @@ def detrend_ts(ts: pd.Series) -> pd.Series:
     return ts.diff().dropna()
 
 
-def deseasonalise_ts(ts: pd.Series, period: int = 365) -> pd.Series:
+def deseasonalise_ts(ts: pd.Series, period: int = 8769) -> pd.Series:
     """
     Deseasonalise a time series by differencing.
 
@@ -147,7 +147,7 @@ def retrend_ts(original_ts: pd.Series, detrended_ts: pd.Series) -> pd.Series:
     return original_ts.shift(1) + detrended_ts
 
 
-def reseasonalise_ts(original_ts: pd.Series, deseasonalised_ts: pd.Series, period: int = 365) -> pd.Series:
+def reseasonalise_ts(original_ts: pd.Series, deseasonalised_ts: pd.Series, period: int = 8760) -> pd.Series:
     """
     Reseasonalise a deseasonalised time series by adding the seasonal component back.
 
