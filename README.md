@@ -3,8 +3,8 @@
 ## TL;DR
 This project develops and evaluates time series models for forecasting solar power generation in Germany. We use both univariate (Moving Average, NBEATS, NHITS, Random Forest, CatBoost) and multivariate (LSTM) models. Our datasets, available on Hugging Face, include:
 - [Original Dataset](https://huggingface.co/datasets/Creatorin/solarpower)
-- [PCA Dataset](https://huggingface.co/datasets/Creatorin/solar_pca)
 - [Feature-Selected Dataset](https://huggingface.co/datasets/Creatorin/solar_selected)
+- [PCA Dataset](https://huggingface.co/datasets/Creatorin/solar_pca)
 
 **Key findings:** CatBoost performed best for univariate analysis (R² .8457), while the original LSTM model excelled in multivariate analysis (R² .8826).
 
@@ -15,6 +15,7 @@ pip install timeseriesfcst
 ```
 A local version of the package can also be found in the repository direcotry ```tsfcst_local_version```.
 
+All required libraries can be installed by running ```pip install -r requirements.txt```.
 
 ## Repository Structure
 
