@@ -1,5 +1,3 @@
-# LSTM model
-
 import tensorflow as tf
 import numpy as np
 import pandas as pd
@@ -8,7 +6,6 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense, Dropout
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.preprocessing.sequence import TimeseriesGenerator
-
 
 
 # Create sequences
