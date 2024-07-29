@@ -1,5 +1,15 @@
 # Learning from Light: Advanced Time Series Analysis for German Solar Energy Forecasting
 
+## TL;DR
+This project develops and evaluates time series models for forecasting solar power generation in Germany. We use both univariate (Moving Average, NBEATS, NHITS, Random Forest, CatBoost) and multivariate (LSTM) models. Our datasets, available on Hugging Face, include:
+- [Original Dataset](https://huggingface.co/datasets/Creatorin/solarpower)
+- [PCA Dataset](https://huggingface.co/datasets/Creatorin/solar_pca)
+- [Feature-Selected Dataset](https://huggingface.co/datasets/Creatorin/solar_selected)
+
+Key findings: CatBoost performed best for univariate analysis (R² .8457), while the original LSTM model excelled in multivariate analysis (R² .8826).
+
+
+
 ## Introduction
 The rising demand for renewable energy and the variability in solar power generation due to weather conditions necessitate accurate prediction models for energy supply. This project outlines a comprehensive approach to forecasting solar power generation, utilising both univariate and multivariate time series models. Key methodologies include preprocessing techniques such as stationarity adjustments, Fourier analysis, and anomaly detection using autoencoders. Various models, including **Moving Average**, **NBEATS**, **NHITS**, **Random Forest**, and **CatBoost** for univariate data, and **LSTM** for multivariate data, are evaluated. The study leverages weather data from six German cities and highlights the challenges and potential improvements in the prediction models.
 
