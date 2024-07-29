@@ -13,6 +13,17 @@ This project develops and evaluates time series models for forecasting solar pow
 ```bash
 pip install timeseriesfcst
 ```
+
+## Repository Structure
+
+The data exploration, statistics and modeling was done in separate notebooks for univariate and multivariate analyses. This was done to maintain a clear structure and to avoid confusion, as different models may require different processing steps. 
+The notebooks are structured as follows:
+- Notebook 0 contains an overview of the target feature, solar power, and various visualisations.
+- Notebook 1  contains the exploratory data analysis for all features, including weather data and correlation analyses.
+- Notebook 2 contains the feature engineering and dataset creation.
+- Notebook 3 contains the univariate time series models.
+- Notebook 4 contains the multivariate LSTM model.
+
 ## Introduction
 The rising demand for renewable energy and the variability in solar power generation due to weather conditions necessitate accurate prediction models for energy supply. This project outlines a comprehensive approach to forecasting solar power generation, utilising both univariate and multivariate time series models. Key methodologies include preprocessing techniques such as stationarity adjustments, Fourier analysis, and anomaly detection using autoencoders. Various models, including **Moving Average**, **NBEATS**, **NHITS**, **Random Forest**, and **CatBoost** for univariate data, and **LSTM** for multivariate data, are evaluated. The study leverages weather data from six German cities and highlights the challenges and potential improvements in the prediction models.
 
