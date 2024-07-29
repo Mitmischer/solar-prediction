@@ -9,9 +9,9 @@ This project develops and evaluates time series models for forecasting solar pow
 **Key findings:** CatBoost performed best for univariate analysis (R² .8457), while the original LSTM model excelled in multivariate analysis (R² .8826).
 
 
-**Package Info:** A python package was created to ease the imports of the various helperfunctions when working with colab, for instance. The package can be installed using ```bash
+**Package Info:** A python package was created to ease the imports of the various helperfunctions when working with colab, for instance. The package can be installed using 
+```bash
 pip install energytstoolkit
-
 
 ## Introduction
 The rising demand for renewable energy and the variability in solar power generation due to weather conditions necessitate accurate prediction models for energy supply. This project outlines a comprehensive approach to forecasting solar power generation, utilising both univariate and multivariate time series models. Key methodologies include preprocessing techniques such as stationarity adjustments, Fourier analysis, and anomaly detection using autoencoders. Various models, including **Moving Average**, **NBEATS**, **NHITS**, **Random Forest**, and **CatBoost** for univariate data, and **LSTM** for multivariate data, are evaluated. The study leverages weather data from six German cities and highlights the challenges and potential improvements in the prediction models.
