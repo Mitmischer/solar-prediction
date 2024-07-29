@@ -3,7 +3,6 @@ from statsmodels.tsa.stattools import adfuller, kpss
 import matplotlib.pyplot as plt
 
 
-
 # Make stationary - Augmented Dicky Fuller Test
 def make_stationary_unitroot(train_ts, val_ts, test_ts: pd.Series) -> None:
     """
@@ -28,14 +27,14 @@ def make_stationary_unitroot(train_ts, val_ts, test_ts: pd.Series) -> None:
         return result[1] < 0.05  # Return True if the series is stationary
 
     def check_and_difference(series, column_name):
-        differenced = False
+        diff = False
         is_stationary = perform_adf(series, column_name)
         iteration = 0
         while not is_stationary:
             print(f'The time series {column_name} is not stationary. Differencing the series and re-testing...')
             series = series.diff().dropna()
             is_stationary = perform_adf(series, f'{column_name} (Differenced {iteration + 1})')
-            differenced = True
+            diff = True
             iteration += 1
 
         if is_stationary:
@@ -43,7 +42,7 @@ def make_stationary_unitroot(train_ts, val_ts, test_ts: pd.Series) -> None:
         else:
             print(f'The time series {column_name} is still not stationary after differencing {iteration} time(s).')
 
-        return series, differenced
+        return series, diff
 
     for col in train_ts.columns:
         print(f'Checking stationarity for {col}')
@@ -57,7 +56,7 @@ def make_stationary_unitroot(train_ts, val_ts, test_ts: pd.Series) -> None:
 def check_stationarity_variance(ts: pd.DataFrame | pd.Series, window: int = 24) -> None:
     """
     Check the stationarity of a time series based on the variance of a rolling window.
-    Print whether or not the time series has constant variance.
+    Print whether the time series has constant variance.
 
     Parameters:
     :param ts: Train Time series data (DataFrame or Series).
@@ -75,7 +74,7 @@ def check_stationarity_variance(ts: pd.DataFrame | pd.Series, window: int = 24) 
 def check_stationarity_variance_single(ts: pd.Series, window: int = 24, plot: bool = True) -> None:
     """
     Check the stationarity of a single time series based on the variance of a rolling window.
-    Print whether or not the time series has constant variance.
+    Print whether the time series has constant variance.
     Plot the rolling variance and print the results of the Augmented Dickey-Fuller and KPSS tests.
     """
     # Calculate rolling variance
@@ -86,7 +85,6 @@ def check_stationarity_variance_single(ts: pd.Series, window: int = 24, plot: bo
 
     # Perform Kwiatkowski-Phillips-Schmidt-Shin test on rolling variance
     kpss_result = kpss(rolling_var)
-
 
     # Plot rolling variance with transparent background
     if plot:
@@ -99,7 +97,7 @@ def check_stationarity_variance_single(ts: pd.Series, window: int = 24, plot: bo
         plt.show()
 
     # Check results and print conclusion
-    if adf_result[1] < 0.05 and kpss_result[1] >= 0.05:
+    if adf_result[1] < 0.05 <= kpss_result[1]:
         print("The time series appears to have constant variance (stationary).")
     else:
         print("The time series does not appear to have constant variance (non-stationary).")
@@ -124,6 +122,7 @@ def detrend_ts(ts: pd.Series) -> pd.Series:
     """
     return ts.diff().dropna()
 
+
 def deseasonalise_ts(ts: pd.Series, period: int = 365) -> pd.Series:
     """
     Deseasonalise a time series by differencing.
@@ -147,6 +146,7 @@ def retrend_ts(original_ts: pd.Series, detrended_ts: pd.Series) -> pd.Series:
     """
     return original_ts.shift(1) + detrended_ts
 
+
 def reseasonalise_ts(original_ts: pd.Series, deseasonalised_ts: pd.Series, period: int = 365) -> pd.Series:
     """
     Reseasonalise a deseasonalised time series by adding the seasonal component back.
@@ -158,4 +158,3 @@ def reseasonalise_ts(original_ts: pd.Series, deseasonalised_ts: pd.Series, perio
         :return: Reseasonalised time series data.
     """
     return original_ts.shift(period) + deseasonalised_ts
-
