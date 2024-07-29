@@ -13,6 +13,8 @@ This project develops and evaluates time series models for forecasting solar pow
 ```bash
 pip install timeseriesfcst
 ```
+A local version of the package can also be found in the repository direcotry ```tsfcst_local_version```.
+
 
 ## Repository Structure
 
