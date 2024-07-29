@@ -33,7 +33,7 @@ np.ndarray, np.ndarray):
     return X, y
 
 
-def create_lstm_model(input_shape, units=50, dropout_rate=0.1, optimizer=Adam(learning_rate=0.0001), loss='mse'):
+def create_lstm_model(input_shape, units=50, dropout_rate=0.2, optimizer=Adam(learning_rate=0.0001), loss='mse'):
     model = Sequential([
         LSTM(units, return_sequences=True, input_shape=input_shape),
         Dropout(dropout_rate),
