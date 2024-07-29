@@ -7,7 +7,11 @@ This project develops and evaluates time series models for forecasting solar pow
 - [Feature-Selected Dataset](https://huggingface.co/datasets/Creatorin/solar_selected)
 
 **Key findings:** CatBoost performed best for univariate analysis (R² .8457), while the original LSTM model excelled in multivariate analysis (R² .8826).
-**Package Info:** A python package was created to ease the imports of the varous helperfunctions when working with colab, for instance. The package can be installed via `pip install time-series-toolkit´.
+
+
+**Package Info:** A python package was created to ease the imports of the varous helperfunctions when working with colab, for instance. The package can be installed using ```
+pip install time-series-toolkit
+```
 
 
 ## Introduction
