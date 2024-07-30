@@ -1,0 +1,10 @@
+numpy~=1.26.4
+pandas~=2.2.2
+matplotlib~=3.9.1
+tensorflow~=2.17.0
+scikit-learn~=1.5.1
+statsmodels~=0.14.2
+h5py~=3.11.0
+jupyter~=1.0.0
+timeseriesfcst>=0.1.3
+
